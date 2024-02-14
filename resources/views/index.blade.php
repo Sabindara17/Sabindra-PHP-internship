@@ -7,10 +7,10 @@
 </head>
 <body>
     @foreach($intern as $item)
-    {{$item->title}}
-    <br>
-    {{ $item->discription}}
-    <br>
+        {{$item->title}}
+        <br>
+        {{ $item->discription}}
+        <br>
     @endforeach
 </body>
 </html>
