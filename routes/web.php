@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
      Route::get('/admin/post/list', [PostController::class, 'view'])->name('post.view');
      Route::get('/admin/post/create', [PostController::class, 'create'])->name('post.create');
      Route::post('/admin/post/create', [PostController::class, 'store'])->name('post.store');
+     Route::get('/admin/post/edit/{postid}', [PostController::class, 'edit'])->name('post.edit');
+     Route::put('/admin/post/edit/{postid}', [PostController::class, 'update'])->name('post.update');
 
 });
 
