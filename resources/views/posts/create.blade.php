@@ -3,7 +3,17 @@
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
             {{ __('Create Post') }}
         </div>
-
+        @php
+            $error = '';
+        @endphp
+        @if ($errors->any())
+            @foreach($errors->all() as $er)
+                @php
+                    $error .= $er . '</br>';
+                @endphp
+            @endforeach
+        @endif
+        <input type="text" id="error" value="{{ $error }}" readonly hidden>
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -30,3 +40,17 @@
         </form>
     </div>
 </x-app-layout>
+
+<script>
+    $(document).ready(function() {
+        if ($('#error').val() != '') {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: $('#error').val(),
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+</script>

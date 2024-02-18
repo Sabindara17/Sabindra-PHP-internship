@@ -23,14 +23,20 @@ class PostController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'title' =>'required',
-            'description' =>'required',
+            'title' =>['required','min:5'],
+            'description' =>['required','min:10'],
         ]);
+        try{
+            $this->model->create([
+                'title' => $request->title,
+                'description' => $request->description,
+            ]);
+            return redirect()->route('post.view')->with('success','Post added Successfully');
+        }catch(\Exception $e){
+            return redirect()->back()->withInput()->withErrors(['error'=>'There is an issue making post. Please contact admin ']);
 
-        $this->model->create([
-            'title' => $request->title,
-            'description' => $request->description,
-        ]);
+        }
+
         return redirect()->route('post.view')->with('success', 'Post added successfully');
     }
     public function edit($postid){
@@ -50,17 +56,38 @@ class PostController extends Controller
             return redirect()->route('post.view')->with('error', 'Post not found');
         }
         $request->validate([
-            'title' =>'required',
-            'description' =>'required',
+            'title' =>['required','min:5'],
+            'description' =>['required','min:10'],
         ]);
+        try{
+            $post->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+            ]);
+            return redirect()->route('post.view')->with('success', 'Post edited successfully');
 
-        $post->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-        ]);
-
+        }catch(\Exception $e){
+            return redirect()->back()->withInput()->withErrors(['error'=>'There is an issue making post. Please contact admin ']);
+        }
         return redirect()->route('post.view')->with('success', 'Post edited successfully');
 
 
+    }
+
+    public function destroy($postid){
+        $deleted = Post::find($postid)->delete();
+        if($deleted){
+            $msg = array(
+                'status' => true,
+                'message' => 'Post deleted'
+            );
+        }else{
+            $msg = array(
+                'status' => false,
+                'message' => 'Post cannot be deleted.'
+            );
+        }
+
+        return json_encode($msg);
     }
 }
