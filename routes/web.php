@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,12 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::get('/', function () {
+
+ Route::get('/', [HomeController::class, 'index'])->name('home');
+ /*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+
 
 Route::get('/intern', [TaskController::class, 'index']);
 
@@ -38,7 +42,8 @@ Route::middleware('auth')->group(function () {
      Route::get('/admin/post/edit/{postid}', [PostController::class, 'edit'])->name('post.edit');
      Route::put('/admin/post/edit/{postid}', [PostController::class, 'update'])->name('post.update');
      Route::get('/admin/post/delete/{postid}', [PostController::class, 'destroy'])->name('post.destroy');
-
+     Route::get('/admin/post/viewpost/{postid}', [PostController::class, 'viewpost'])->name('post.viewpost');
+     Route::post('/admin/post/addComment', [PostController::class, 'commentStore'])->name('comment.store');
 });
 
 require __DIR__.'/auth.php';

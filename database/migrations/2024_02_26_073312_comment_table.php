@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts',function (Blueprint $table){
+        //
+        Schema::create('comments',function (Blueprint $table){
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('description')->nullable();
+            $table->string('comment')->nullable();
+            $table->string('post_id')->nullable();
             $table->timestamps(6);
             $table->softDeletes('deleted_at',6);
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->string('deleted_by')->nullable();
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
 

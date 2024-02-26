@@ -35,6 +35,7 @@
                             <a href="{{ route('post.edit', ['postid' => $post->id]) }}"
                                 class="btn btn-primary mb-4">Edit</a>
                             <span class="btn btn-danger mb-4 delete-button" data-id="{{ $post->id }}">Delete</span>
+                            <a href="{{ route('post.viewpost',['postid' => $post->id]) }}" class="btn btn-danger mb-">Add Comment</a>
 
                         </td>
                     </tr>

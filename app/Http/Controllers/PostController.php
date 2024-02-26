@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+
 
 class PostController extends Controller
 {
@@ -89,5 +92,33 @@ class PostController extends Controller
         }
 
         return json_encode($msg);
+    }
+
+    public function viewpost($postid){
+        // print_r($this->model->with('comment')->get());die();
+        // $post = Post::find($postid);
+        $post = $this->model->where('id',$postid)->with('comment')->get();
+        if(!$post){
+            return redirect()->route('post.view')->with('error', 'Post not found');
+        }
+        return view('posts.comment',[
+            'post' =>  $post[0],
+        ]);
+
+    }
+
+    public function commentStore(Request $request){
+        $request->validate([
+            'comment' =>['required'],
+        ]);
+        try{
+            Comment::create([
+                'comment' => $request->comment,
+                'post_id' => $request->post_id,
+            ]);
+            return redirect()->route('post.viewpost')->with('success', 'Commented successfully');
+        }catch(\Exception $e){
+            return redirect()->back()->withInput()->withErrors(['error' => 'There is an issue making post. Please contact admin']);
+        }
     }
 }
