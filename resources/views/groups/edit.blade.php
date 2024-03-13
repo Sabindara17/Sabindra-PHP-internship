@@ -29,24 +29,3 @@
     </form>
     </div>
 </x-app-layout>
-
-{{-- <script>
-    $(document).ready(function() {
-        if ($('#error').val() != '') {
-            Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: $('#error').val(),
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
-</script> --}}
-
-<script>
-     $(document).ready(function() {
-
-        $('#groups').select2();
-    });
-</script>
