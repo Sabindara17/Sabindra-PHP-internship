@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-// use App\Models\User;
-// use Illuminate\Support\Facades\auth;
+ use App\Models\User;
+ use Illuminate\Support\Facades\Auth;
+ use App\Http\Requests\Auth\LoginRequest;
 
 
 class APIController extends Controller
 {
-    /*
+ /**
      * @OA\Get(
      *      path="/api/post",
      *      operationId="getPostDetails",
@@ -61,6 +62,7 @@ class APIController extends Controller
             return response()->json(['status' => 422, 'message' => 'Something went wrong']);
         }
     }
+
     public function update(Request $request, $id)
     {
         if (is_null($request->title)) {
@@ -96,4 +98,60 @@ class APIController extends Controller
             return response()->json(['status' => 422, 'message' => 'Something went wrong']);
         }
     }
+     /**
+     * @OA\Post(
+     *      path="/api/login",
+     *      operationId="loginUser",
+     *      tags={"Auth"},
+     *      summary="Login User",
+     *      description="Login User",
+     *      security={{"bearer_token":{}}},
+     *      @OA\RequestBody(
+     *          @OA\MediaType(mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  @OA\Property(property="email", type="string"),
+     *                  @OA\Property(property="password", type="string"),
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(response=200, description="successful operation",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(property="resCod", type="string", example="200"),
+     *                  @OA\Property(property="resDesc", type="string", example="User Auth Token"),
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Error in input"
+     *         )
+     * )
+     */
+
+     public function login(Request $request)
+     {
+         $email = $request->email;
+         $password = $request->password;
+         try{
+             if(Auth::attempt(['email' => $email,'password' => $password])){
+                 $user = User::find(Auth::user()->id);
+                 $token = $user->createToken('API Token')->accessToken;
+                 return response()->json([
+                     'success' => true,
+                     'token' => $token,
+                     'status' => 200
+                 ]);
+             }else{
+                 return response()->json([
+                     'success' => false,
+                     'message' => 'Authentication failed',
+                     'status' => 401
+                 ]);
+             }
+         }catch(\Exception $e){
+             return response()->json(['status' => 422,'message' => 'Invalid credentials']);
+         }
+     }
 }
